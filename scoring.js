@@ -4,81 +4,86 @@ const calculateScore = (player) => {
   let points = 0
 
   if (position === 'QB') {
-    points = player.stats.passing.yards / 25
+    const { passing, rushing } = player.stats
+
+    // PASSING
+    points = passing.yards / 25
     score += points
 
-    points = player.stats.passing.touchdowns * 6
+    points = passing.touchdowns * 6
     score += points
 
-    points = player.stats.passing.interceptions * 3
+    points = passing.interceptions * 3
     score -= points
 
-    points = player.stats.rushing.yards / 10
+    // RUSHING
+    points = rushing.yards / 10
     score += points
 
-    points = player.stats.rushing.touchdowns * 6
+    points = rushing.touchdowns * 6
     score += points
 
-    points = player.stats.rushing.fumbles * 3
-    score -= points
-
-    return score
-  } else if (position === 'RB' || position === 'WR') {
-    points = player.stats.rushing.yards / 10
-    score += points
-
-    points = player.stats.rushing.touchdowns * 6
-    score += points
-
-    points = player.stats.rushing.fumbles * 3
-    score -= points
-
-    points = player.stats.receiving.receptions
-    score += points
-
-    points = player.stats.receiving.yards / 10
-    score += points
-
-    points = player.stats.receiving.touchdowns * 6
-    score += points
-
-    points = player.stats.receiving.fumbles * 3
-    score -= points
-
-    points = player.stats.return.kickreturn.yards / 15
-    score += points
-
-    points = player.stats.return.kickreturn.touchdowns * 6
-    score += points
-
-    points = player.stats.return.kickreturn.fumbles * 3
-    score -= points
-
-    points = player.stats.return.puntreturn.yards / 15
-    score += points
-
-    points = player.stats.return.puntreturn.touchdowns * 6
-    score += points
-
-    points = player.stats.return.puntreturn.fumbles * 3
+    points = rushing.fumbles * 3
     score -= points
 
     return score
-  } else if (position === 'TE') {
-    points = player.stats.receiving.receptions
+  }
+  else if (position === 'TE' || position === 'RB' || position === 'WR') {
+    const { receiving } = player.stats
+
+    // RECEIVING
+    points = receiving.receptions
     score += points
 
-    points = player.stats.receiving.yards / 10
+    points = receiving.yards / 10
     score += points
 
-    points = player.stats.receiving.touchdowns * 6
+    points = receiving.touchdowns * 6
     score += points
 
-    points = player.stats.receiving.fumbles * 3
+    points = receiving.fumbles * 3
     score -= points
 
+    if (position === 'RB' || position === 'WR') {
+      const { rushing } = player.stats
+      const { kickreturn, puntreturn } = player.stats.return
+
+      // RUSHING
+      points = rushing.yards / 10
+      score += points
+
+      points = rushing.touchdowns * 6
+      score += points
+
+      points = rushing.fumbles * 3
+      score -= points
+
+      // KICK RETURN
+      points = kickreturn.yards / 15
+      score += points
+
+      points = kickreturn.touchdowns * 6
+      score += points
+
+      points = kickreturn.fumbles * 3
+      score -= points
+
+      // PUNT RETURN
+      points = puntreturn.yards / 15
+      score += points
+
+      points = puntreturn.touchdowns * 6
+      score += points
+
+      points = puntreturn.fumbles * 3
+      score -= points
+
+      return score
+    }
+
     return score
-  } else {
+  }
+  else {
     return 0
   }
 }
